@@ -1,0 +1,6 @@
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N"]
+ignore = ["EXE002"]        # every file looks executable on the NTFS course drive

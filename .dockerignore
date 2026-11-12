@@ -1,0 +1,4 @@
+# only the two service scripts are copied into images
+*
+!backend.py
+!frontend.py

@@ -1,0 +1,27 @@
+groups:
+  - name: service
+    rules:
+      - alert: ServiceDown
+        expr: up == 0
+        for: 15s
+        labels: {severity: critical}
+        annotations: {summary: "{{ $labels.job }} is not answering scrapes"}
+      - alert: ModelServerDown
+        expr: backend_model_server_up == 0
+        for: 15s
+        labels: {severity: critical}
+        annotations: {summary: "backend cannot reach the model server"}
+      - alert: HighErrorRatio
+        expr: sum(rate(backend_requests_total{status=~"5.."}[1m])) / (sum(rate(backend_requests_total[1m])) > 0) > 0.1
+        for: 30s
+        labels: {severity: warning}
+        annotations: {summary: "more than 10% of backend requests fail"}
+      - alert: FeatureDrift
+        expr: abs(backend_feature_drift_z) > 2
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: "recent {{ $labels.feature }} differs from training by more than 2 sd"}
+      - alert: PipelineStageFailed
+        expr: pipeline_stage_success == 0
+        labels: {severity: warning}
+        annotations: {summary: "pipeline stage {{ $labels.stage }} failed on its last run"}

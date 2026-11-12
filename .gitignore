@@ -1,0 +1,9 @@
+.venv/
+.cache/
+.spark_tmp/
+__pycache__/
+mlflow.db
+mlruns/
+reports/pipeline_runs.jsonl
+/model
+/serving

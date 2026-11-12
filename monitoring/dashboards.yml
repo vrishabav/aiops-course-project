@@ -1,0 +1,3 @@
+apiVersion: 1
+providers:
+  - {name: project, type: file, updateIntervalSeconds: 10, options: {path: /var/lib/grafana/dashboards}}

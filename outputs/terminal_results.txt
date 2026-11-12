@@ -1,0 +1,64 @@
+## dvc dag
+            +------+       
+            | test |       
+            +------+       
+                *          
+                *          
+                *          
+           +--------+      
+           | ingest |      
+           +--------+      
+           *         **    
+         **            *   
+        *               ** 
++----------+              *
+| validate |            ** 
++----------+           *   
+           *         **    
+            **     **      
+              *   *        
+          +----------+     
+          | features |     
+          +----------+     
+           *         *     
+         **           *    
+        *              **  
+  +-------+              * 
+  | train |            **  
+  +-------+           *    
+           *         *     
+            **     **      
+              *   *        
+          +----------+     
+          | evaluate |     
+          +----------+     
+
+## dvc metrics show
+Path                     best_gbm.l2_regularization    best_gbm.learning_rate    best_gbm.max_iter    best_gbm.max_leaf_nodes    best_gbm.min_samples_leaf    champion    checks.all_tickers_present    checks.enough_history    checks.high_is_highest    checks.low_is_lowest    checks.no_nulls    checks.prices_positive    checks.required_columns    checks.unique_ticker_date    checks.vix_covers_dates    checks.volume_positive    first_date    grid_size    har_coefficients.intercept    har_coefficients.log_rv_1    har_coefficients.log_rv_22    har_coefficients.log_rv_5    last_date    naive_qlike    naive_rmse    naive_rmspe    passed    permutation_importance.log_rv_1    permutation_importance.log_rv_22    permutation_importance.log_rv_5    permutation_importance.log_vix    permutation_importance.log_volume_ratio    permutation_importance.ret_5    permutation_importance.vix_change_5    qlike_ratio    ray_parallel_s    ray_speedup    rmse_ratio    rows    rows_in    rows_out    rows_per_s    run_id                            sequential_s    spark_seconds    test_qlike    test_rmse    test_rmspe    test_rows    tickers    validation.gbm.qlike    validation.gbm.rmse    validation.gbm.rmspe    validation.har.qlike    validation.har.rmse    validation.har.rmspe    validation.naive.qlike    validation.naive.rmse    validation.naive.rmspe
+reports/validation.json  -                             -                         -                    -                          -                            -           True                          True                     True                      True                    True               True                      True                       True                         True                       True                      2015-01-02    -            -                             -                            -                             -                            2025-12-31   -              -             -              True      -                                  -                                   -                                  -                                 -                                          -                               -                                      -              -                 -              -             82980   -          -           -             -                                 -               -                -             -            -             -            30         -                       -                      -                       -                       -                      -                       -                         -                        -
+reports/features.json    -                             -                         -                    -                          -                            -           -                             -                        -                         -                       -                  -                         -                          -                            -                          -                         -             -            -                             -                            -                             -                            -            -              -             -              -         -                                  -                                   -                                  -                                 -                                          -                               -                                      -              -                 -              -             -       82980      82320       18190.6       -                                 -               4.56             -             -            -             -            -          -                       -                      -                       -                       -                      -                       -                         -                        -
+reports/train.json       1.0                           0.03                      400                  15                         50                           gbm         -                             -                        -                         -                       -                  -                         -                          -                            -                          -                         -             32           -0.3212                       0.1768                       0.3801                        0.264                        -            -              -             -              -         0.0636                             0.362                               0.1721                             0.033                             0.0086                                     0.0175                          0.064                                  -              3.93              4.32           -             -       -          -           -             119a806a058a4743a197ae0e9c79e24f  17.01           -                -             -            -             -            -          0.11716                 0.06339                0.23869                 0.13198                 0.06425                0.23331                 0.15936                   0.06985                  0.28143
+reports/metrics.json     -                             -                         -                    -                          -                            gbm         -                             -                        -                         -                       -                  -                         -                          -                            -                          -                         -             -            -                             -                            -                             -                            -            0.20607        0.07371       0.32052        True      -                                  -                                   -                                  -                                 -                                          -                               -                                      0.7262         -                 -              0.85009       -       -          -           -             -                                 -               -                0.14965       0.06266      0.26123       22410        -          -                       -                      -                       -                       -                      -                       -                         -                        -
+
+## pytest
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+11 passed, 1 warning in 7.58s
+
+## ruff
+All checks passed!
+
+## docker compose ps
+SERVICE         STATUS                   PORTS
+backend         Up 2 minutes (healthy)   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+frontend        Up 2 minutes             0.0.0.0:8501->8501/tcp, [::]:8501->8501/tcp, 9101/tcp
+grafana         Up 3 minutes             0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
+model-server    Up 2 minutes (healthy)   0.0.0.0:5001->5001/tcp, [::]:5001->5001/tcp
+node-exporter   Up 3 minutes             9100/tcp
+prometheus      Up 3 minutes             0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp
+pushgateway     Up 3 minutes             0.0.0.0:9091->9091/tcp, [::]:9091->9091/tcp
+
+## git lfs track
+outputs/**/*.png filter=lfs diff=lfs merge=lfs -text
+*.pdf filter=lfs diff=lfs merge=lfs -text
+*.webm filter=lfs diff=lfs merge=lfs -text

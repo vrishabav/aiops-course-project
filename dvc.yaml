@@ -1,0 +1,32 @@
+stages:
+  test:
+    cmd: python pipeline.py test
+    deps: [pipeline.py, backend.py, test_project.py]
+    outs: [reports/junit.xml: {cache: false}]
+  ingest:
+    cmd: python pipeline.py ingest
+    deps: [pipeline.py, reports/junit.xml]   # tests must pass before any data is touched
+    params: [data]
+    outs: [data/raw.csv, data/vix.csv]
+  validate:
+    cmd: python pipeline.py validate
+    deps: [pipeline.py, data/raw.csv, data/vix.csv]
+    metrics: [reports/validation.json: {cache: false}]
+  features:
+    cmd: python pipeline.py features
+    deps: [pipeline.py, data/raw.csv, data/vix.csv, reports/validation.json]
+    params: [features]
+    outs: [data/features]
+    metrics: [reports/features.json: {cache: false}]
+  train:
+    cmd: python pipeline.py train
+    deps: [pipeline.py, data/features]
+    params: [train]
+    outs: [model]
+    metrics: [reports/train.json: {cache: false}]
+  evaluate:
+    cmd: python pipeline.py evaluate
+    deps: [pipeline.py, model, data/features]
+    params: [evaluate]
+    outs: [serving: {persist: true}]       # kept when the gate fails: the previous model stays in service
+    metrics: [reports/metrics.json: {cache: false}]

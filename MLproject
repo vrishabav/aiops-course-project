@@ -1,0 +1,9 @@
+name: volatility-forecaster
+python_env: python_env.yaml
+entry_points:
+  main:
+    command: "dvc repro"
+  train:
+    command: "python pipeline.py train"
+  test:
+    command: "python -m pytest -q test_project.py"
