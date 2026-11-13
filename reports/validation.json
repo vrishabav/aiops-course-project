@@ -1,0 +1,19 @@
+{
+  "rows": 82980,
+  "tickers": 30,
+  "first_date": "2015-01-02",
+  "last_date": "2025-12-31",
+  "checks": {
+    "required_columns": true,
+    "no_nulls": true,
+    "prices_positive": true,
+    "high_is_highest": true,
+    "low_is_lowest": true,
+    "volume_positive": true,
+    "unique_ticker_date": true,
+    "all_tickers_present": true,
+    "enough_history": true,
+    "vix_covers_dates": true
+  },
+  "passed": true
+}

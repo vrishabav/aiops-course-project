@@ -1,0 +1,47 @@
+{
+  "run_id": "aba5b49dc5024a1f90afabbc8114dbc3",
+  "champion": "gbm",
+  "best_gbm": {
+    "learning_rate": 0.03,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 50,
+    "max_iter": 400,
+    "l2_regularization": 1.0
+  },
+  "validation": {
+    "naive": {
+      "rmse": 0.06984636705468197,
+      "rmspe": 0.2814268492651936,
+      "qlike": 0.15935918854826892
+    },
+    "har": {
+      "rmse": 0.06424513325948583,
+      "rmspe": 0.23330616351177924,
+      "qlike": 0.1319808515722118
+    },
+    "gbm": {
+      "rmse": 0.06339349669021965,
+      "rmspe": 0.23868891263931308,
+      "qlike": 0.11716170303338837
+    }
+  },
+  "grid_size": 32,
+  "sequential_s": 17.41,
+  "ray_parallel_s": 4.02,
+  "ray_speedup": 4.33,
+  "har_coefficients": {
+    "intercept": -0.3212,
+    "log_rv_1": 0.1768,
+    "log_rv_5": 0.264,
+    "log_rv_22": 0.3801
+  },
+  "permutation_importance": {
+    "log_rv_1": 0.0638,
+    "log_rv_5": 0.1686,
+    "log_rv_22": 0.3568,
+    "ret_5": 0.0175,
+    "log_volume_ratio": 0.0084,
+    "log_vix": 0.0321,
+    "vix_change_5": 0.0619
+  }
+}

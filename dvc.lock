@@ -1,0 +1,234 @@
+schema: '2.0'
+stages:
+  test:
+    cmd: python pipeline.py test
+    deps:
+    - path: backend.py
+      hash: md5
+      md5: 20d186a98af044129b27efe4b8da6b62
+      size: 9527
+      isexec: true
+    - path: pipeline.py
+      hash: md5
+      md5: ff22ac05c5494200101e68dd8d6b86dd
+      size: 21224
+      isexec: true
+    - path: test_project.py
+      hash: md5
+      md5: 4586c7d689488b2304183ce6bbe085fe
+      size: 6493
+      isexec: true
+    outs:
+    - path: reports/junit.xml
+      hash: md5
+      md5: 733493027f2f1799b8d51fc824ac5b38
+      size: 1254
+      isexec: true
+  ingest:
+    cmd: python pipeline.py ingest
+    deps:
+    - path: pipeline.py
+      hash: md5
+      md5: ff22ac05c5494200101e68dd8d6b86dd
+      size: 21224
+      isexec: true
+    - path: reports/junit.xml
+      hash: md5
+      md5: 733493027f2f1799b8d51fc824ac5b38
+      size: 1254
+      isexec: true
+    params:
+      params.yaml:
+        data:
+          tickers:
+          - AAPL
+          - MSFT
+          - NVDA
+          - JPM
+          - BAC
+          - GS
+          - JNJ
+          - UNH
+          - PFE
+          - AMZN
+          - HD
+          - MCD
+          - PG
+          - KO
+          - WMT
+          - XOM
+          - CVX
+          - COP
+          - CAT
+          - HON
+          - UPS
+          - GOOGL
+          - META
+          - VZ
+          - NEE
+          - DUK
+          - SO
+          - PLD
+          - AMT
+          - LIN
+          vix: ^VIX
+          start: '2015-01-01'
+          end: '2026-01-01'
+    outs:
+    - path: data/raw.csv
+      hash: md5
+      md5: 2fe3cb6b7d188d1883037df25a238a27
+      size: 8037797
+      isexec: true
+    - path: data/vix.csv
+      hash: md5
+      md5: c0b93fb1662ee1576b31e1cd357b0ee1
+      size: 80695
+      isexec: true
+  validate:
+    cmd: python pipeline.py validate
+    deps:
+    - path: data/raw.csv
+      hash: md5
+      md5: 2fe3cb6b7d188d1883037df25a238a27
+      size: 8037797
+      isexec: true
+    - path: data/vix.csv
+      hash: md5
+      md5: c0b93fb1662ee1576b31e1cd357b0ee1
+      size: 80695
+      isexec: true
+    - path: pipeline.py
+      hash: md5
+      md5: ff22ac05c5494200101e68dd8d6b86dd
+      size: 21224
+      isexec: true
+    outs:
+    - path: reports/validation.json
+      hash: md5
+      md5: eee1a71b9c675741c4a40a7871044056
+      size: 420
+      isexec: true
+  features:
+    cmd: python pipeline.py features
+    deps:
+    - path: data/raw.csv
+      hash: md5
+      md5: 2fe3cb6b7d188d1883037df25a238a27
+      size: 8037797
+      isexec: true
+    - path: data/vix.csv
+      hash: md5
+      md5: c0b93fb1662ee1576b31e1cd357b0ee1
+      size: 80695
+      isexec: true
+    - path: pipeline.py
+      hash: md5
+      md5: ff22ac05c5494200101e68dd8d6b86dd
+      size: 21224
+      isexec: true
+    - path: reports/validation.json
+      hash: md5
+      md5: eee1a71b9c675741c4a40a7871044056
+      size: 420
+      isexec: true
+    params:
+      params.yaml:
+        features:
+          windows:
+          - 1
+          - 5
+          - 22
+          horizon: 5
+    outs:
+    - path: data/features
+      hash: md5
+      md5: bef999353d71a167cb12cabc36d26f75.dir
+      size: 7856769
+      nfiles: 8
+    - path: reports/features.json
+      hash: md5
+      md5: a2e781b1daac9f2e1a545dd4873f3ed6
+      size: 93
+      isexec: true
+  train:
+    cmd: python pipeline.py train
+    deps:
+    - path: data/features
+      hash: md5
+      md5: bef999353d71a167cb12cabc36d26f75.dir
+      size: 7856769
+      nfiles: 8
+    - path: pipeline.py
+      hash: md5
+      md5: ff22ac05c5494200101e68dd8d6b86dd
+      size: 21224
+      isexec: true
+    params:
+      params.yaml:
+        train:
+          train_end: '2021-12-31'
+          val_end: '2022-12-31'
+          seed: 42
+          ray_cpus: 8
+          grid:
+            learning_rate:
+            - 0.03
+            - 0.1
+            max_leaf_nodes:
+            - 15
+            - 31
+            min_samples_leaf:
+            - 50
+            - 200
+            max_iter:
+            - 200
+            - 400
+            l2_regularization:
+            - 0.0
+            - 1.0
+    outs:
+    - path: model
+      hash: md5
+      md5: 8d00a444a48906f3c73634790391dcd8.dir
+      size: 2218748
+      nfiles: 8
+    - path: reports/train.json
+      hash: md5
+      md5: f7c907684bd97eb4b4bd2bd944d6044a
+      size: 1053
+      isexec: true
+  evaluate:
+    cmd: python pipeline.py evaluate
+    deps:
+    - path: data/features
+      hash: md5
+      md5: bef999353d71a167cb12cabc36d26f75.dir
+      size: 7856769
+      nfiles: 8
+    - path: model
+      hash: md5
+      md5: 8d00a444a48906f3c73634790391dcd8.dir
+      size: 2218748
+      nfiles: 8
+    - path: pipeline.py
+      hash: md5
+      md5: ff22ac05c5494200101e68dd8d6b86dd
+      size: 21224
+      isexec: true
+    params:
+      params.yaml:
+        evaluate:
+          max_qlike_ratio: 1.0
+          max_rmse_ratio: 1.0
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: bc91eb777a66924b0cb4411605878346
+      size: 355
+      isexec: true
+    - path: serving
+      hash: md5
+      md5: 8d00a444a48906f3c73634790391dcd8.dir
+      size: 2218748
+      nfiles: 8

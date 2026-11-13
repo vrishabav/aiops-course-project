@@ -1,0 +1,13 @@
+{
+  "test_rmse": 0.06263745370472909,
+  "test_rmspe": 0.26073710245988846,
+  "test_qlike": 0.1497201093578435,
+  "naive_rmse": 0.0737069783409268,
+  "naive_rmspe": 0.3205171352236293,
+  "naive_qlike": 0.20606842971934475,
+  "qlike_ratio": 0.726555297974343,
+  "rmse_ratio": 0.8498171423471419,
+  "passed": true,
+  "test_rows": 22410,
+  "champion": "gbm"
+}
