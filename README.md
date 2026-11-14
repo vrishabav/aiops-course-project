@@ -5,7 +5,7 @@ and the VIX, 2015-2025, Yahoo Finance) and shows it in a web UI with a low / med
 DVC pipeline (CI) → Spark features → Ray-parallel training with MLflow tracking → MLflow model server → FastAPI
 backend → Streamlit UI, in Docker Compose, monitored with Prometheus and Grafana.
 
-**Evaluators:** see [INSTRUCTIONS_FOR_TAS.md](INSTRUCTIONS_FOR_TAS.md) for the rubric map, step-by-step run, test plan and report.
+**Evaluators:** see [INSTRUCTIONS_FOR_TAS.md](INSTRUCTIONS_FOR_TAS.md) for the rubric checks and the step-by-step run, and [TEST_PLAN.md](TEST_PLAN.md) for the test plan and report.
 
 ## 1. Architecture
 
@@ -67,15 +67,7 @@ reports for the console), `GET /metrics`. Model server (port 5001): `GET /ping`,
 
 ## 4. User manual
 
-Open **http://localhost:8501** in a browser.
-1. **Forecast** tab → pick a **Stock** (type the first letters to search).
-2. Leave **Forecast as of** at the right for the coming week; drag left to see what the app would have said on an earlier day.
-3. Read the boxes: **Forecast volatility** (expected yearly-scale price movement; about 15 % calm, 40 %+ turbulent),
-   **Risk level** (green LOW, orange MEDIUM, red HIGH: the calmest, middle and most volatile third of 2015-2022),
-   **What actually happened** (real volatility of that week, for past dates), **Market fear index (VIX)** (above 30 is high).
-4. Charts: recent volatility with the forecast as a flat line, and the closing price. Try JPM on 16 March 2020: HIGH.
-5. Red message "service not reachable": wait a minute and reload. Empty stock list: ask the administrator to run the pipeline.
-6. **Pipeline** tab (administrators): stages coloured by last result, speed, run history with errors, model comparison, links to MLflow, Grafana, Prometheus.
+See [docs/user_manual.pdf](docs/user_manual.pdf): how to open the app, read the forecast, risk level, charts and the date slider, an example, what to do when something goes wrong, and the Pipeline tab for administrators. The app itself also has a *Help* tab with the same quick help. Open **http://localhost:8501** in a browser.
 
 ## 5. Files
 
@@ -85,7 +77,8 @@ Open **http://localhost:8501** in a browser.
 | `backend.py`, `frontend.py` | FastAPI backend, Streamlit UI |
 | `test_project.py` | 11 unit and API tests |
 | `dvc.yaml`, `params.yaml` | DAG and all parameters (tickers, dates, windows, grid, gate) |
-| `docs/` | `hld.pdf` (high-level design) and `lld.pdf` (low-level design) |
+| `docs/` | `hld.pdf` (high-level design), `lld.pdf` (low-level design), `user_manual.pdf` (user manual) |
+| `TEST_PLAN.md` | Test plan, acceptance criteria, test cases and test report |
 | `pyproject.toml` | Lint configuration (ruff: PEP 8 style, imports, naming) |
 | `Dockerfile`, `docker-compose.yml` | Three images (model-server, backend, frontend), full stack |
 | `MLproject`, `python_env.yaml`, `requirements.txt` | Pinned environment and entry points |
@@ -121,11 +114,9 @@ Limitations: Garman-Klass ignores overnight gaps; 30 surviving large caps; Spark
 (used to show the scaling path); training runs on the host (Spark and Ray need its cores), serving is containerised.
 
 ## 8. AI disclosure
-- **Tool:** Claude Code (Anthropic).
-- **Planning:** turned the course guidelines and problem statement into a rubric checklist and a build plan; found
-  the published HAR / machine-learning volatility studies behind the model choice.
-- **Boilerplate:** first drafts of `docker-compose.yml`, `Dockerfile`, `dvc.yaml`, `MLproject` and the Prometheus and Grafana files.
-- **Code:** drafted `pipeline.py` (Spark window features, Ray grid search, MLflow logging), `backend.py`, `frontend.py` and the tests.
+AI tools/agents were used to assist in the development process of this project
+- **Boilerplate:** drafting of `docker-compose.yml`, `Dockerfile`, `dvc.yaml`, `MLproject` and the Prometheus and Grafana files.
+- **Code:** scriting `pipeline.py` (Spark window features, Ray grid search, MLflow logging), `backend.py`, `frontend.py` and the tests.
 - **Debugging:** diagnosed errors from logs (Ray's GPU probe, Ray workers failing on a path with spaces, Yahoo rate limits, lint errors).
-- **Documentation:** drafted this README, `INSTRUCTIONS_FOR_TAS.md` and the report outline.
-- **Impact:** faster boilerplate, debugging and documents. The numbers in this repository come from running the pipeline, not from the AI.
+- **Documentation:** drafted this README, `INSTRUCTIONS_FOR_TAS.md` and the design documents. They were used to draft structure, and refine language.
+- **Impact:** faster scripting, debugging and document production. All numbers in this repository come from running the pipeline manually.

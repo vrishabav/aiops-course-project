@@ -1,8 +1,8 @@
 # Instructions for TAs
 
 Next-week stock volatility forecaster. Background, architecture, design decisions (HLD), API (LLD), user manual
-and AI disclosure are in [README.md](README.md). This file: what to run, what to check, and the test plan.
-Allow about 15 minutes. The first Docker build can take longer when PyPI is slow; later builds use a pip cache.
+and AI disclosure are in [README.md](README.md) and the documents it links. This file: what to run and what to check; the test plan is in [TEST_PLAN.md](TEST_PLAN.md).
+Allow about 15 minutes.
 
 ## 1. Mandatory documents
 | Document | Where |
@@ -10,8 +10,8 @@ Allow about 15 minutes. The first Docker build can take longer when PyPI is slow
 | Architecture diagram with block explanations | [docs/hld.pdf](docs/hld.pdf) §2 (also README §1) |
 | High-level design (choices and rationale) | [docs/hld.pdf](docs/hld.pdf) |
 | Low-level design (endpoints, I/O) | [docs/lld.pdf](docs/lld.pdf) (live version at http://localhost:8000/docs) |
-| Test plan and cases | §5 below |
-| User manual | README §4, and the UI *Help* tab |
+| Test plan and cases | [TEST_PLAN.md](TEST_PLAN.md) |
+| User manual | [docs/user_manual.pdf](docs/user_manual.pdf) (also the UI *Help* tab) |
 
 ## 2. Run it
 Needs Python 3.14, Java 17, Docker with Compose v2, uv, git-lfs. Run from the repository root.
@@ -67,43 +67,8 @@ sed -i 's/max_qlike_ratio: 0.5/max_qlike_ratio: 1.0/' params.yaml && dvc repro
 E4 shows a red *evaluate* node and the error in the UI Pipeline tab, and `PipelineStageFailed` in Prometheus until the next success.
 
 ## 5. Test plan and report
-**Approach.** Unit tests (Spark features against pandas, metrics, data rules), API tests with the model server stubbed
-(`test_project.py`, run by `python pipeline.py test` as the first DVC stage and shown in the Pipeline tab; report in `reports/junit.xml`), and end-to-end checks of the running stack.
-
-**Acceptance criteria**
-1. All automated tests pass.
-2. The pipeline finishes with `reports/metrics.json` `passed: true`: on 2023-2025 the model's QLIKE and RMSE are below the naive forecast's.
-3. With the stack up every service answers its health URL and the UI shows a forecast in under 1 s.
-4. Stopping the model server gives 503 on `/health` and `/forecast`, a friendly UI message and a `ModelServerDown` alert; starting it restores service.
-5. Requests for March 2020 push the drift z-score above 2 and fire `FeatureDrift`.
-
-| ID | Type | Case | Expected |
-|---|---|---|---|
-| T1 | unit | Spark HAR features, target and VIX join | equal to pandas (1e-9); last 3 targets empty; partial windows dropped |
-| T2 | unit | RMSE, RMSPE, QLIKE, bias correction | 0 for a perfect forecast; QLIKE punishes under-forecasts more |
-| T3 | unit | clean OHLCV data | every data rule passes |
-| T4 | unit | high below close, null volume, duplicate row | matching rules fail |
-| T5 | unit | missing column, short history, missing ticker or VIX dates | reported as failed |
-| T11 | unit | a failing stage inside `tracked` | run history records status `failed` and the error text |
-| T6 | API | forecast for the latest date | 200; log forecast converted to %; bucket; no realised value |
-| T7 | API | `as_of` in the past / before the data / invalid | earlier row with realised value and forecast-error metric / 404 / 422 |
-| T8 | API | unknown ticker | 404 |
-| T9 | API | model server down | 503 on `/forecast` and `/health` |
-| T10 | API | `/tickers`, `/metrics` | date range; metric names present |
-| E1 | e2e | `docker compose up`, health URLs | all 200; Prometheus targets UP |
-| E2 | e2e | stop model server | criterion 4 |
-| E3 | e2e | March 2020 requests | criterion 5 |
-| E4 | e2e | gate set to 0.5 | evaluate fails, red node, `serving/` unchanged |
-
-**Report** (author's runs, 2026-10-30)
-| Run | Total | Passed | Failed | Criteria met |
-|---|---|---|---|---|
-| pytest (`reports/junit.xml`) | 11 | 11 | 0 | 1 |
-| evaluate (`reports/metrics.json`: QLIKE ratio 0.73, RMSE ratio 0.85) | 1 | 1 | 0 | 2 |
-| E1-E3 | 3 | 3 | 0 | 3, 4, 5 |
-| E4 | 1 | 1 | 0 | gate blocks a worse model |
+The test approach, acceptance criteria, test-case list and test report are in [TEST_PLAN.md](TEST_PLAN.md).
 
 ## 6. Evidence and notes
-- Screenshots and recordings of the author's runs are in `outputs/` (Git LFS); the pipeline numbers are in `reports/*.json` after `dvc repro`.
-- Results are reproducible: dates and seeds are fixed in `params.yaml`, so model scores match; timings vary by machine.
-- The pipeline console is read-only by design: runs are started with `dvc repro`, because training needs the host's CPUs, Java and the MLflow store. Serving is containerised.
+- Screenshots and recordings of runs are in `outputs/` (Git LFS); the pipeline numbers are in `reports/*.json` after `dvc repro`.
+- Results are reproducible: dates and seeds are fixed in `params.yaml`, so model scores match.
