@@ -113,6 +113,8 @@ Spark features about 16-20k rows/s on 83k rows; Ray grid of 32 fits 4.2-4.4x fas
 Limitations: Garman-Klass ignores overnight gaps; 30 surviving large caps; Spark and Ray are oversized for 83k rows
 (used to show the scaling path); training runs on the host (Spark and Ray need its cores), serving is containerised.
 
+Video: https://drive.google.com/file/d/1W8IOGvnm7rZY4ft6qQA_y5Ore_4f6OqZ/
+
 ## 8. AI disclosure
 AI tools/agents were used to assist in the development process of this project
 - **Boilerplate:** drafting of `docker-compose.yml`, `Dockerfile`, `dvc.yaml`, `MLproject` and the Prometheus and Grafana files.
