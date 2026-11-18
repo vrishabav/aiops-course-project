@@ -120,5 +120,5 @@ AI tools/agents were used to assist in the development process of this project
 - **Boilerplate:** drafting of `docker-compose.yml`, `Dockerfile`, `dvc.yaml`, `MLproject` and the Prometheus and Grafana files.
 - **Code:** scriting `pipeline.py` (Spark window features, Ray grid search, MLflow logging), `backend.py`, `frontend.py` and the tests.
 - **Debugging:** diagnosed errors from logs (Ray's GPU probe, Ray workers failing on a path with spaces, Yahoo rate limits, lint errors).
-- **Documentation:** drafted this README, `INSTRUCTIONS_FOR_TAS.md` and the design documents. They were used to draft structure, and refine language.
+- **Documentation:** README, `INSTRUCTIONS_FOR_TAS.md` and the design documents. They were used to draft structure, and refine language.
 - **Impact:** faster scripting, debugging and document production. All numbers in this repository come from running the pipeline manually.
